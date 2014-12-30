@@ -1,0 +1,9 @@
+{
+  "name": "in_crypti",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "node run_vmscript.js"
+  },
+  "dependencies": {
+  }
+}
