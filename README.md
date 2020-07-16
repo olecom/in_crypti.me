@@ -2,6 +2,7 @@ Interview task
 ==============
 
 Run JavaScript code from a file in 'vm' sandbox with memory limit.
+Protect code against escapes and `process` access as noted from: https://pwnisher.gitlab.io/nodejs/sandbox/2019/02/21/sandboxing-nodejs-is-hard.html
 
 ```
 $ npm start
@@ -69,4 +70,16 @@ node d:\#_projects\crypti.me\in_crypti.me\run_vmscript.js \
      memlimit(type: number) "valid_script_file.js"
 
 olecom@U32U-RX007R_OLE /d/#_projects/crypti.me/in_crypti.me (master)
+```
+
+#### VM escape and accessing `process` global:
+```
+$ node run_vmscript.js 11 tests/vm_sandbox_escape.js
+must be `process.env` if not secure:
+{ nothing: true }
+{ nothing: true }
+
+*****
+
+sandbox exit code: 0
 ```

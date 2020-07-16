@@ -23,7 +23,7 @@ var memlimit, timelimit = 512;
         // (max size of the old generation (in Mbytes)
         '--max-old-space-size=' + memlimit,
         // evaluate the script
-        '-e', sandbox(jsbuf.replace(/[\r\n]?[\r\n]/g, '\\n'))// UNIX EOLs
+        '-e', sandbox(jsbuf)
       ],
       opt:{
         detached: false,
@@ -56,9 +56,18 @@ var memlimit, timelimit = 512;
     }
 
     function sandbox(srctxt){
-      return err = 'var js = "' + srctxt.replace(/"/g, '\\"') + '";\n(' + (
+      return ''
+      // make sandbox safe WRT `process` access when escaping the sandbox:
+      // https://pwnisher.gitlab.io/nodejs/sandbox/2019/02/21/sandboxing-nodejs-is-hard.html
+      +'process.mainModule = process.env = { nothing: true };'
+      // escape quotes and backslashes, use UNIX EOLs in script
+      +'var js = "' + srctxt.replace(/(["\\])/g, '\\$1').replace(/[\r\n]?[\r\n]/g, '\\n')
+      +'";\n('
+      +(
         function(js){
-          require('vm').runInNewContext(js, { con: console});
+          require('vm').runInNewContext(js, {
+            con: console,
+          });
         }
       ).toString() + ')(js)\n';
     }
